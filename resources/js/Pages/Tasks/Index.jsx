@@ -2,12 +2,12 @@ import Pagination from '@/Components/Pagination';
 import SelectInput from '@/Components/SelectInput';
 import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP } from '@/constants.jsx';
+import { TASK_STATUS_CLASS_MAP, TASK_STATUS_TEXT_MAP } from '@/constants.jsx';
 import { Head, Link, router } from '@inertiajs/react';
-import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/16/solid'
+
 import TableHeading from '@/Components/TableHeading';
 
-export default function Dashboard({ auth, projects, queryParams = null }) {
+export default function Dashboard({ auth, tasks, queryParams = null }) {
   queryParams = queryParams || {}
   const searchFieldChanged = (name, value) => {
     if (value) {
@@ -16,7 +16,7 @@ export default function Dashboard({ auth, projects, queryParams = null }) {
       delete queryParams[name]
     }
 
-    router.get(route('project.index'), queryParams)
+    router.get(route('task.index'), queryParams)
   }
 
   const onKeyPress = (name, e) => {
@@ -35,14 +35,14 @@ export default function Dashboard({ auth, projects, queryParams = null }) {
       queryParams.sort_field = name
       queryParams.sort_direction = 'asc'
     }
-    router.get(route('project.index'), queryParams)
+    router.get(route('task.index'), queryParams)
   }
   return (
     <AuthenticatedLayout
       user={auth.user}
-      header={<h2 className="text-xl font-semibold leading-tight text-gray-800">Projects</h2>}
+      header={<h2 className="text-xl font-semibold leading-tight text-gray-800">Tasks</h2>}
     >
-      <Head title="Projects" />
+      <Head title="Tasks" />
 
       <div className="py-12">
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -104,7 +104,7 @@ export default function Dashboard({ auth, projects, queryParams = null }) {
                       <th className='px-3 py-3'>
                         <TextInput
                           className='w-full'
-                          placeholder="Project Name"
+                          placeholder="Task Name"
                           onBlur={e => searchFieldChanged('name', e.target.value)}
                           onKeyPress={e => onKeyPress('name', e)} />
                       </th>
@@ -131,27 +131,27 @@ export default function Dashboard({ auth, projects, queryParams = null }) {
                     </tr>
                   </thead>
                   <tbody >
-                    {projects.data.map((project, index) => (
+                    {tasks.data.map((task, index) => (
                       <tr key={index} className='bg-white border-b'>
-                        <td className='px-3 py-2'>{project.id} </td>
+                        <td className='px-3 py-2'>{task.id} </td>
                         <td className='px-3 py-2'>
-                          <img src={project.image_path} style={{ width: 60 }} alt="" />
+                          <img src={task.image_path} style={{ width: 60 }} alt="" />
                         </td>
-                        <td className='px-3 py-2'>{project.name} </td>
+                        <td className='px-3 py-2'>{task.name} </td>
                         <td className='px-3 py-2'>
                           <span className={
                             "px-2 py-1 rounded-md text-white " +
-                            PROJECT_STATUS_CLASS_MAP[project.status]
+                            TASK_STATUS_CLASS_MAP[task.status]
                           }>
-                            {PROJECT_STATUS_TEXT_MAP[project.status]}
+                            {TASK_STATUS_TEXT_MAP[task.status]}
                           </span>
                         </td>
-                        <td className='px-3 py-2 text-nowrap'>{project.created_at} </td>
-                        <td className='px-3 py-2 text-nowrap'>{project.due_date} </td>
-                        <td className='px-3 py-2'>{project.createdBy.name} </td>
+                        <td className='px-3 py-2 text-nowrap'>{task.created_at} </td>
+                        <td className='px-3 py-2 text-nowrap'>{task.due_date} </td>
+                        <td className='px-3 py-2'>{task.createdBy.name} </td>
                         <td className='px-3 py-2'>
-                          <Link href={route('project.edit', project.id)} className='mx-1 font-medium text-blue-600 hover:underline'>Edit</Link>
-                          <Link href={route('project.destroy', project.id)} className='mx-1 font-medium text-red-600 hover:underline'>Delete</Link>
+                          <Link href={route('task.edit', task.id)} className='mx-1 font-medium text-blue-600 hover:underline'>Edit</Link>
+                          <Link href={route('task.destroy', task.id)} className='mx-1 font-medium text-red-600 hover:underline'>Delete</Link>
                         </td>
 
                       </tr>
@@ -160,7 +160,7 @@ export default function Dashboard({ auth, projects, queryParams = null }) {
                   </tbody>
                 </table>
               </div>
-              <Pagination links={projects.meta.links} />
+              <Pagination links={tasks.meta.links} />
             </div>
           </div>
         </div>
