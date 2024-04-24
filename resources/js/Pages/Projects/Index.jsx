@@ -7,7 +7,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/16/solid'
 import TableHeading from '@/Components/TableHeading';
 
-export default function Dashboard({ auth, projects, queryParams = null }) {
+export default function Dashboard({ success,auth, projects, queryParams = null }) {
   queryParams = queryParams || {}
   const searchFieldChanged = (name, value) => {
     if (value) {
@@ -37,15 +37,33 @@ export default function Dashboard({ auth, projects, queryParams = null }) {
     }
     router.get(route('project.index'), queryParams)
   }
+
+  const deleteProject = (project) => {
+    if (!window.confirm("Are you sure you want to delete the project?")) {
+      return;
+    }
+    router.delete(route("project.destroy", project.id));
+  };
   return (
     <AuthenticatedLayout
       user={auth.user}
-      header={<h2 className="text-xl font-semibold leading-tight text-gray-800">Projects</h2>}
+      header={
+
+      <div className='flex items-center justify-between'>
+        <h2 className="text-xl font-semibold leading-tight text-gray-800">Projects</h2>
+    <Link href={route('project.create')} className='px-3 py-1 text-white transition-all rounded shadow bg-emerald-500 hover:bg-emerald-600'>
+    Add new Button
+    </Link>
+      </div>
+    }
     >
       <Head title="Projects" />
 
       <div className="py-12">
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        {success && <div className='px-4 py-2 mb-4 text-white rounded bg-emerald-500'>
+      {success}
+        </div>}
           <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
             <div className="p-6 text-gray-900">
               <div className='overflow-auto'>
@@ -153,9 +171,19 @@ export default function Dashboard({ auth, projects, queryParams = null }) {
                         <td className='px-3 py-2 text-nowrap'>{project.created_at} </td>
                         <td className='px-3 py-2 text-nowrap'>{project.due_date} </td>
                         <td className='px-3 py-2'>{project.createdBy.name} </td>
-                        <td className='px-3 py-2'>
-                          <Link href={route('project.edit', project.id)} className='mx-1 font-medium text-blue-600 hover:underline'>Edit</Link>
-                          <Link href={route('project.destroy', project.id)} className='mx-1 font-medium text-red-600 hover:underline'>Delete</Link>
+                        <td className="px-3 py-2 text-nowrap">
+                          <Link
+                            href={route("project.edit", project.id)}
+                            className="mx-1 font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                          >
+                            Edit
+                          </Link>
+                          <button
+                            onClick={(e) => deleteProject(project)}
+                            className="mx-1 font-medium text-red-600 dark:text-red-500 hover:underline"
+                          >
+                            Delete
+                          </button>
                         </td>
 
                       </tr>

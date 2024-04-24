@@ -7,6 +7,8 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\TaskResource;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
@@ -33,6 +35,7 @@ class ProjectController extends Controller
     return inertia("Projects/Index", [
         "projects" => ProjectResource::collection($projects),
         'queryParams' => request()->query() ?: null,
+        'success'=>session('success'),
     ]);
 }
 
@@ -42,7 +45,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+       return inertia("Projects/Create");
     }
 
     /**
@@ -50,7 +53,19 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        //
+        $data=$request->validated();
+        $image=$data['image']?? null;
+        $data['created_by']=Auth::id();
+        $data['updated_by']=Auth::id();
+
+        if($image){
+            $imagePath = $request->file('image')->store('images', 'public');
+
+            $data['image_path'] = $imagePath;
+        }
+        Project::create($data);
+
+        return to_route('project.index')->with('success','Project is created');
     }
 
     /**
@@ -77,7 +92,7 @@ class ProjectController extends Controller
             'project' => new ProjectResource($project),
             "tasks" => TaskResource::collection($tasks),
             'queryParams' => request()->query() ?: null,
-           
+
         ]);
     }
 
@@ -86,7 +101,9 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        //
+        return inertia('Projects/Edit',[
+            'project'=>new ProjectResource($project)
+        ]);
     }
 
     /**
@@ -94,14 +111,53 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        //
+        // Validate the request data
+        $validatedData = $request->validated();
+
+
+        $data = [];
+
+
+        if ($request->hasFile('image')) {
+
+            if ($project->image_path) {
+                Storage::disk('public')->delete($project->image_path);
+            }
+
+
+            $imagePath = $request->file('image')->store('images', 'public');
+
+
+            $data['image_path'] = $imagePath;
+        }
+
+
+        $data['updated_by'] = Auth::id();
+
+
+        $project->update(array_merge($validatedData, $data));
+
+
+        return redirect()->route('project.index')->with('success', 'Project is updated');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Project $project)
     {
-        //
+
+        if ($project->image_path) {
+
+            Storage::disk('public')->delete($project->image_path);
+        }
+
+
+        $project->delete();
+
+       
+        return redirect()->route('project.index')->with('message', 'Project is deleted');
     }
+
 }
