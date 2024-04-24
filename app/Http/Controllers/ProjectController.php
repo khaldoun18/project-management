@@ -111,7 +111,7 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        // Validate the request data
+
         $validatedData = $request->validated();
 
 
@@ -156,7 +156,7 @@ class ProjectController extends Controller
 
         $project->delete();
 
-       
+
         return redirect()->route('project.index')->with('message', 'Project is deleted');
     }
 
