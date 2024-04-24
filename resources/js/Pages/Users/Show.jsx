@@ -1,6 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import { USER_STATUS_CLASS_MAP, USER_STATUS_TEXT_MAP } from "@/constants.jsx";
+
 import TasksTable from "../Tasks/TasksTable";
 export default function Show({ auth, user, tasks, queryParams }) {
   return (
@@ -40,7 +40,7 @@ export default function Show({ auth, user, tasks, queryParams }) {
                     <p className="mt-1">
                       <span
                         className={
-                          "px-2 py-1 rounded text-white " 
+                          "px-2 py-1 rounded text-white "
 
                         }
                       >

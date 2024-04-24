@@ -21,9 +21,9 @@ export default function AuthenticatedLayout({ user, header, children }) {
               </div>
 
               <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                {/* <NavLink href={route('dashboard')} active={route().current('dashboard')}>
+                <NavLink href={route('dashboard')} active={route().current('dashboard')}>
                   Dashboard
-                </NavLink> */}
+                </NavLink>
                 <NavLink href={route('project.index')} active={route().current('project.index')}>
                   Projects
                 </NavLink>
@@ -106,6 +106,26 @@ export default function AuthenticatedLayout({ user, header, children }) {
           <div className="pt-2 pb-3 space-y-1">
             <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
               Dashboard
+            </ResponsiveNavLink>
+          </div>
+          <div className="pt-2 pb-3 space-y-1">
+            <ResponsiveNavLink href={route('project.index')} active={route().current('project.index')}>
+              Projects
+            </ResponsiveNavLink>
+          </div>
+          <div className="pt-2 pb-3 space-y-1">
+            <ResponsiveNavLink href={route('task.index')} active={route().current('task.index')}>
+              All Tasks
+            </ResponsiveNavLink>
+          </div>
+          <div className="pt-2 pb-3 space-y-1">
+            <ResponsiveNavLink href={route('user.index')} active={route().current('user.index')}>
+            Users
+            </ResponsiveNavLink>
+          </div>
+          <div className="pt-2 pb-3 space-y-1">
+            <ResponsiveNavLink href={route('task.myTasks')} active={route().current('task.myTasks')}>
+            My Tasks
             </ResponsiveNavLink>
           </div>
 
